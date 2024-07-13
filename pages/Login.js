@@ -1,33 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Dimensions, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert, Image } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 import axios from 'axios';
-import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const { width, height } = Dimensions.get('window');
-const ngrokUrl = 'https://b45b-83-137-6-227.ngrok-free.app';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [ngrokUrl, setNgrokUrl] = useState(null);
+  const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
     const config = {
       headers: { 'Authorization': "Bearer 2hsoEyQpmPX4VkdVTitaAGgnJE7_6dFvuuendEo5DM1ry44rX", 'Ngrok-Version': '2' }
     };
 
-    const bodyParameters = {
-      'Ngrok-Version': '2'
-    };
-
     const fetchNgrokUrl = async () => {
       try {
-        console.log('here')
-        const response = await axios.get(
-          'https://api.ngrok.com/endpoints',
-          config
-        );
-        const url = response.data.endpoints[0].public_url
+        const response = await axios.get('https://api.ngrok.com/endpoints', config);
+        const url = response.data.endpoints[0].public_url;
         setNgrokUrl(url);
       } catch (error) {
         console.error('Failed to fetch ngrok URL:', error);
@@ -58,35 +50,65 @@ const Login = ({ navigation }) => {
     }
   };
 
+  const handleForgotPassword = () => {
+    // Navigate to the forgot password screen
+    navigation.navigate('ForgotPassword');
+  };
+
+  const handleRegister = () => {
+    // Navigate to the registration screen
+    navigation.navigate('Register');
+  };
+
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/spartner_logo.png')} style={styles.logo} />
-      <Text style={styles.title}>Welcome to SPartner</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <View style={styles.linkView}>
-        <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.registerButtonText}>Don't have an account?</Text>
+      <View style={styles.cont1}>
+        <View style={styles.imgCont}> 
+          <Image source={require('../assets/login_img.png')} style={styles.image} />
+        </View>
+      </View>
+      <View style={styles.cont2}>
+        <View style={styles.logoContainer}>
+          <Text style={styles.logoText}>ResQ</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#000"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#000"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+        </View>
+        <View style={styles.optionsContainer}>
+          <TouchableOpacity activeOpacity={1.0} style={styles.rememberMeContainer}>
+            <CheckBox
+              checked={rememberMe}
+              onPress={() => setRememberMe(!rememberMe)}
+              containerStyle={styles.checkboxContainer}
+            />
+            <Text style={styles.rememberMeText}>Remember Me</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleForgotPassword}>
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.registerButtonText}>Forgot Password? </Text>
-        </TouchableOpacity> */}
+        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+          <Text style={styles.registerButtonText}>Register</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -95,80 +117,109 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#2c3e50',
-    paddingHorizontal: '5%',
-  },
-  logo: {
-    width: width * 0.6,
-    height: width * 0.6,
-    borderRadius: (width * 0.6) / 2,
-    borderWidth: 3,
-    borderColor: '#fff',
-    marginTop: height * 0.17,
-    marginBottom: height * 0.06,
-  },
-  title: {
-    fontSize: width * 0.075,
-    fontWeight: 'bold',
-    marginBottom: height * 0.015,
-    textAlign: 'center',
-    color: '#fff',
-  },
-  input: {
-    height: 40,
-    width: '100%',
-    borderRadius: 5,
-    marginBottom: 12,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-  },
-  loginButton: {
-    width: '100%',
-    height: 40,
-    backgroundColor: '#3498db',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
+    backgroundColor: '#8FBC8F', // Dark sea green background
+  },
+  cont1: {
+    width: width,
+    height: height * 0.35,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  cont2: {
+    width: width,
+    height: height * 0.65,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingTop: 50,
+  },
+  imgCont: {
+    height: height * 0.35,
+    width: width * 0.92,
+    marginTop: height * 0.045,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  logoContainer: {
+    marginBottom: 40,
+  },
+  logoText: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#2E8B57', // Matching the button background color
+  },
+  inputContainer: {
+    width: '80%',
+  },
+  input: {
+    height: 50,
+    borderColor: '#2E8B57', // Matching the button background color
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    color: '#000',
+    backgroundColor: '#fff', // White background for input fields
+  },
+  optionsContainer: {
+    width: '80%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  rememberMeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkboxContainer: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    padding: 0,
+    margin: 0,
+  },
+  rememberMeText: {
+    fontSize: 16,
+    color: '#000',
+  },
+  forgotPasswordText: {
+    fontSize: 16,
+    color: '#2E8B57',
+  },
+  button: {
+    width: '80%',
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#2E8B57', // Sea green button background
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
-  orSeparatorContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#ccc',
-  },
-  orText: {
-    marginHorizontal: 10,
-    fontSize: 16,
-    color: '#ccc',
-  },
-  authenticationCont: {
-    width: '100%',
-    alignItems: 'center',
-    marginTop: -10,
-  },
-  linkView: {
-    flexDirection: 'row',
-    width: width * 0.9,
-    justifyContent: 'space-between'
-  },
   registerButton: {
-    marginTop: 10,
+    width: '80%',
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#4682B4', // Steel blue button background
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
   },
   registerButtonText: {
     color: '#fff',
-    fontSize: 16,
-    textDecorationLine: 'underline',
-    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
