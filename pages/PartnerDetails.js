@@ -126,20 +126,18 @@ const PartnerDetails = ({ route, navigation }) => {
                 <ScrollView>
                     <Text style={styles.label}>Description:</Text>
                     <Text style={styles.text}>{partner.company.description}</Text>
-                    <Text style={styles.label}>Type of Organization:</Text>
+                    <Text style={styles.label}>Type of Disaster:</Text>
                     <Text style={styles.text}>{partner.company.type_of_organization}</Text>
-                    <Text style={styles.label}>Email:</Text>
+                    <Text style={styles.label}>Email Contact Information:</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('Email', { email: partner.company.contact.email })}>
                         <Text style={styles.linkText}>{partner.company.contact.email}</Text>
                     </TouchableOpacity>
-                    <Text style={styles.label}>Phone:</Text>
+                    <Text style={styles.label}>Help Phone:</Text>
                     <Text style={styles.text}>{partner.company.contact.phone_number}</Text>
-                    <Text style={styles.label}>Address:</Text>
+                    <Text style={styles.label}>Nearest Location:</Text>
                     <Text style={styles.text}>{partner.company.contact.address.street}</Text>
-                    <Text style={styles.label}>Website:</Text>
+                    <Text style={styles.label}>More Information:</Text>
                     <Text style={styles.text}>{partner.company.contact.website}</Text>
-                    <Text style={styles.label}>Resources Available:</Text>
-                    <Text style={styles.text}>{partner.company.resources_available[0].resource_name}</Text>
                 </ScrollView>
             </View>
             <View style={styles.mapBox}>

@@ -70,19 +70,19 @@ const ViewPartners = ({ navigation }) => {
         let filtered = partners;
 
         if (selectedFilters.soleProprietorship) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Sole Proprietorship');
+            filtered = filtered.filter(partner => partner.company.type_of_organization === 'FireS');
         }
         if (selectedFilters.partnership) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Partnership');
+            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Hurricanes');
         }
         if (selectedFilters.corporation) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Corporation');
+            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Storms');
         }
         if (selectedFilters.nonProfit) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Non-Profit Corporation');
+            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Floods');
         }
         if (selectedFilters.llc) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'LLC');
+            filtered = filtered.filter(partner => partner.company.type_of_organization === 'EarthQuakes');
         }
 
         return filtered.filter(partner =>
@@ -97,7 +97,7 @@ const ViewPartners = ({ navigation }) => {
             <View style={styles.searchView}>
                 <TextInput
                     style={styles.searchBar}
-                    placeholder="Search partners..."
+                    placeholder="Search Disasters..."
                     value={searchText}
                     onChangeText={setSearchText}
                 />
