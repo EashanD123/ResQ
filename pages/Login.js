@@ -82,7 +82,7 @@ const Login = ({ navigation }) => {
             autoCapitalize="none"
           />
           <TextInput
-            style={styles.input}
+            style={styles.input2}
             placeholder="Password"
             placeholderTextColor="#000"
             value={password}
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingTop: 50,
+    paddingBottom: 30
   },
   imgCont: {
     height: height * 0.35,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   logoContainer: {
-    marginBottom: 40,
+    marginBottom: 20,
   },
   logoText: {
     fontSize: 48,
@@ -157,13 +157,27 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '80%',
+    alignItems: 'center',
   },
   input: {
     height: 50,
+    width: '100%',
     borderColor: '#2E8B57', // Matching the button background color
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 20,
+    marginBottom: 20,
+    color: '#000',
+    backgroundColor: '#fff', // White background for input fields
+  },
+  input2: {
+    height: 50,
+    width: '100%',
+    borderColor: '#2E8B57', // Matching the button background color
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    marginTop: -10,
     marginBottom: 20,
     color: '#000',
     backgroundColor: '#fff', // White background for input fields
@@ -200,7 +214,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2E8B57', // Sea green button background
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
@@ -214,7 +228,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4682B4', // Steel blue button background
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
   registerButtonText: {
     color: '#fff',

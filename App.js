@@ -16,6 +16,7 @@ import email from './pages/email'
 import Account from './pages/Account';
 import Calendar from './pages/calendar';
 import Download from './pages/download';
+import Chatbot from './pages/Chatbot';
 
 
 const Stack = createStackNavigator();
@@ -38,6 +39,7 @@ function App() {
       <Stack.Screen name="Edit" component={Edit}/>
       <Stack.Screen name="Calendar" component={Calendar}/>
       <Stack.Screen name="Download" component={Download}/>
+      <Stack.Screen name="Chatbot" component={Chatbot}/>
     </Stack.Navigator>
   );
 }
