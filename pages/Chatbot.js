@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ImageBackground } from 'react-native';
+import { View, StyleSheet, ImageBackground, Dimensions } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import axios from 'axios';
+import NavigationMenu1 from '../components/NavigationMenu1';
 
-const OPENAI_API_KEY = 'sk-proj-54iz8WwzQlCYgZhxM5dBT3BlbkFJpQ960IzwfTpVQMdrcjur';
+const OPENAI_API_KEY = 'sk-proj-wmCbVoq5W6dvEGjPgiGGT3BlbkFJUYYMYR3d7OmuOvnIoRqm';
+const { width, height } = Dimensions.get('window');
 
-const Chatbot = () => {
+const Chatbot = ({ navigation }) => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -17,7 +19,7 @@ const Chatbot = () => {
         user: {
           _id: 2,
           name: 'Chatbot',
-          avatar: 'https://placeimg.com/140/140/any', // Replace with your chatbot avatar URL
+          avatar: '../assets/chatbot2.jpg', // Replace with your chatbot avatar URL
         },
       },
     ]);
@@ -58,7 +60,7 @@ const Chatbot = () => {
         user: {
           _id: 2,
           name: 'Chatbot',
-          avatar: 'https://placeimg.com/140/140/any', // Replace with your chatbot avatar URL
+          avatar: '../assets/chatbot2.jpg', // Replace with your chatbot avatar URL
         },
       };
 
@@ -76,9 +78,11 @@ const Chatbot = () => {
         wrapperStyle={{
           right: {
             backgroundColor: '#0078fe',
+            borderRadius: 15, // Rounded corners for right (sent by user) messages
           },
           left: {
             backgroundColor: '#f0f0f0',
+            borderRadius: 15, // Rounded corners for left (received by bot) messages
           },
         }}
         textStyle={{
@@ -101,6 +105,7 @@ const Chatbot = () => {
           borderTopWidth: 1,
           borderTopColor: '#e8e8e8',
           backgroundColor: '#fff',
+          borderRadius: 15
         }}
         primaryStyle={{ alignItems: 'center' }}
       />
@@ -111,15 +116,21 @@ const Chatbot = () => {
     <ImageBackground
       style={styles.background} // Adjusted style to include backgroundColor
     >
-      <GiftedChat
-        messages={messages}
-        onSend={newMessages => onSend(newMessages)}
-        user={{
-          _id: 1,
-        }}
-        renderBubble={renderBubble}
-        renderInputToolbar={renderInputToolbar}
-      />
+      <View style={{ width: width - 20, height: height - 135, marginLeft: 10 }}>
+        <GiftedChat
+          messages={messages}
+          onSend={newMessages => onSend(newMessages)}
+          user={{
+            _id: 1,
+          }}
+          renderBubble={renderBubble}
+          renderInputToolbar={renderInputToolbar}
+        />
+      </View>
+      <View style={{ marginTop: 135, alignItems: 'center' }}>
+        <NavigationMenu1 navigation={navigation} page={"Home"} />
+
+      </View>
     </ImageBackground>
   );
 };
@@ -127,8 +138,11 @@ const Chatbot = () => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    // width: width,
+    // height: height,
     backgroundColor: '#8FBC8F', // Changed background color to dark sea green
     resizeMode: 'cover',
+    //alignItems: 'center'
   },
 });
 
