@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, TextInput, FlatList, Alert, Modal } from 'react-native';
 import axios from 'axios';
-import NavigationMenu3 from '../components/NavigationMenu3';
+import NavigationMenu1 from '../components/NavigationMenu1';
 import { useFocusEffect } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
@@ -143,7 +143,7 @@ const ViewPartners = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </Modal>
-            <NavigationMenu3 navigation={navigation} page={"ViewPartners"} />
+            <NavigationMenu1 navigation={navigation} page={"Home"} />
         </View>
     );
 };

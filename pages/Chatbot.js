@@ -3,10 +3,9 @@ import { View, StyleSheet, ImageBackground } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import axios from 'axios';
 
-// OpenAI API Configuration
 const OPENAI_API_KEY = 'sk-proj-54iz8WwzQlCYgZhxM5dBT3BlbkFJpQ960IzwfTpVQMdrcjur';
 
-function Chatbot() {
+const Chatbot = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -23,8 +22,6 @@ function Chatbot() {
       },
     ]);
   }, []);
-
-  const OPENAI_API_KEY = 'sk-proj-54iz8WwzQlCYgZhxM5dBT3BlbkFJpQ960IzwfTpVQMdrcjur';
 
   const onSend = async (newMessages = []) => {
     const userMessage = newMessages[0].text;
@@ -72,8 +69,6 @@ function Chatbot() {
     }
   };
 
-
-
   const renderBubble = (props) => {
     return (
       <Bubble
@@ -114,8 +109,7 @@ function Chatbot() {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://www.example.com/background-image.jpg' }} // Replace with your background image URL
-      style={styles.background}
+      style={styles.background} // Adjusted style to include backgroundColor
     >
       <GiftedChat
         messages={messages}
@@ -128,11 +122,12 @@ function Chatbot() {
       />
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    backgroundColor: '#8FBC8F', // Changed background color to dark sea green
     resizeMode: 'cover',
   },
 });

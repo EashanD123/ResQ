@@ -17,7 +17,7 @@ const NavigationMenu1 = ({ navigation, page }) => (
       style={styles.navButton}
       onPress={() => {
         if (page === 'Home') {
-          navigation.navigate('HelpHome');
+          navigation.navigate('ViewPartners');
         } else {
           // Handle other cases or do nothing
         }
