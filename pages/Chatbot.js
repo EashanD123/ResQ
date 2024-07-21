@@ -4,7 +4,7 @@ import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import axios from 'axios';
 import NavigationMenu1 from '../components/NavigationMenu1';
 
-const OPENAI_API_KEY = 'sk-proj-wmCbVoq5W6dvEGjPgiGGT3BlbkFJUYYMYR3d7OmuOvnIoRqm';
+const OPENAI_API_KEY = 'OPENAI_API_KEY';
 const { width, height } = Dimensions.get('window');
 
 const Chatbot = ({ navigation }) => {

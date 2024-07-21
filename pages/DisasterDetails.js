@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Platform, ScrollView } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Platform, ScrollView, Image } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, Marker, Polyline, PROVIDER_DEFAULT, Polygon } from 'react-native-maps';
 import axios from 'axios';
 import NavigationMenu1 from '../components/NavigationMenu1';
 
 const { width, height } = Dimensions.get('window');
 
 const DisasterDetails = ({ route, navigation }) => {
-    const { partnerName } = route.params;
-    const [partner, setPartner] = useState(null);
+    const { disaster } = route.params;
     const [ngrokUrl, setNgrokUrl] = useState(null);
     const [region, setRegion] = useState({
         latitude: 0,
@@ -44,9 +43,9 @@ const DisasterDetails = ({ route, navigation }) => {
         fetchNgrokUrl();
     }, []);
 
-    const getCoordinates = async (data) => {
-        const apiKey = 'AIzaSyDNatdfiiM0sE5k1ltYGHXRRKlyuSCkJ40'; // Replace with your actual API key
-        const address = data.company.contact.address.street + ', ' + data.company.contact.address.city ; // Assuming this is where you want to fetch coordinates
+    const getCoordinates = async () => {
+        const apiKey = 'GOOGLE MAPS API KEY'; // Replace with your actual API key
+        const address = '24463 Perceval Ln'; // Assuming this is where you want to fetch coordinates
 
         try {
             const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
@@ -81,34 +80,23 @@ const DisasterDetails = ({ route, navigation }) => {
     };
 
     useEffect(() => {
-        const fetchPartnerDetails = async () => {
-            try {
-                if (ngrokUrl) {
-                    const response = await axios.get(`${ngrokUrl}/partners`);
-                    const partnerData = response.data.find(p => p.company.name === partnerName);
-                    getCoordinates(partnerData);
-                    setPartner(partnerData);
-                }
-            } catch (error) {
-                console.error('Error fetching partner details:', error);
-            }
-        };
+        // const fetchPartnerDetails = async () => {
+        //     try {
+        //         if (ngrokUrl) {
+        //             const response = await axios.get(`${ngrokUrl}/partners`);
+        //             const partnerData = response.data.find(p => p.company.name === partnerName);
+        //             
+        //             setPartner(partnerData);
+        //         }
+        //     } catch (error) {
+        //         console.error('Error fetching partner details:', error);
+        //     }
+        // };
 
-        fetchPartnerDetails();
+        // fetchPartnerDetails();
     }, [ngrokUrl]);
 
-    const handleDeletePartner = async () => {
-        try {
-            await axios.delete(`${ngrokUrl}/partners/${partner._id}`);
-            Alert.alert('Success', 'Partner deleted successfully');
-            navigation.navigate('ViewPartners'); // Navigate back to the list after deletion
-        } catch (error) {
-            console.error('Error deleting partner:', error);
-            Alert.alert('Error', 'Failed to delete partner');
-        }
-    };
-
-    if (!partner) {
+    if (!disaster) {
         return (
             <View style={styles.container2}>
                 <Text style={styles.loadingText}>Loading...</Text>
@@ -119,11 +107,21 @@ const DisasterDetails = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.titleBox}>
-                <Text style={styles.title}>{partner.company.name}</Text>
+            <View style={[styles.titleBox, { flexDirection: 'row' }]}>
+                <Text style={styles.title}>{disaster.properties.event}</Text>
+                <View style={styles.navIcon}>
+                    <Image source={require('../assets/caution.png')} style={[{ width: '100%', height: '100%' }]} />
+                </View>
             </View>
             <View style={styles.infoBox}>
                 <ScrollView>
+                    <Text style={[styles.label, { textAlign: 'center' }]}>{disaster.properties.headline}</Text>
+                    <Text style={[styles.text, { marginTop: 15 }]}>{disaster.properties.description}</Text>
+                        <Text style={[styles.text, { fontWeight: 'bold', color: 'black', marginTop: 5 }]}>Instructions: </Text>
+                        <Text style={[styles.text, { marginTop: 0 }]}> {disaster.properties.instruction}</Text>
+
+                </ScrollView>
+                {/* <ScrollView>
                     <Text style={styles.label}>Description:</Text>
                     <Text style={styles.text}>{partner.company.description}</Text>
                     <Text style={styles.label}>Type of Disaster:</Text>
@@ -138,26 +136,55 @@ const DisasterDetails = ({ route, navigation }) => {
                     <Text style={styles.text}>{partner.company.contact.address.street}</Text>
                     <Text style={styles.label}>More Information:</Text>
                     <Text style={styles.text}>{partner.company.contact.website}</Text>
-                </ScrollView>
+                </ScrollView> */}
             </View>
             <View style={styles.mapBox}>
                 <MapView
                     style={styles.map}
                     provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
-                    region={region}
-                    onRegionChange={newRegion => setRegion(newRegion)}>
-                    <Marker coordinate={coordinates} />
+                    region={{
+                        latitude: 41.969999999999999,
+                        longitude: -85.540000000000006,
+                        latitudeDelta: 0.25,
+                        longitudeDelta: 0.25,
+                    }}
+                >
+                    <Polygon coordinates={[
+                        {
+                            "latitude": 41.859999999999999,
+                            "longitude": -85.680000000000007
+                        },
+                        {
+                            "latitude": 41.969999999999999,
+                            "longitude": -85.640000000000001
+                        },
+                        {
+                            "latitude": 41.969999999999999,
+                            "longitude": -85.540000000000006
+                        },
+                        {
+                            "latitude": 41.960000000000001,
+                            "longitude": -85.540000000000006
+                        },
+                        {
+                            "latitude": 41.93,
+                            "longitude": -85.609999999999999
+                        },
+                        {
+                            "latitude": 41.839999999999996,
+                            "longitude": -85.659999999999997
+                        },
+                        {
+                            "latitude": 41.859999999999999,
+                            "longitude": -85.680000000000007
+                        }
+                    ]}
+                        fillColor={"red"}
+                    />
                 </MapView>
             </View>
-            <View style={styles.buttonContainer}>
-                {/* <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('Edit', { partner: partner })}>
-                    <Text style={styles.buttonText}>Edit</Text>
-                </TouchableOpacity> */}
-                <TouchableOpacity style={styles.deleteButton} onPress={handleDeletePartner}>
-                    <Text style={styles.buttonText}>Delete</Text>
-                </TouchableOpacity>
-            </View>
-            <NavigationMenu1 navigation={navigation} page={"PartnerDetails"} partner={partner}/>
+
+            <NavigationMenu1 navigation={navigation} page={"Home"} />
         </View>
     );
 };
@@ -175,6 +202,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#8FBC8F',
+    },
+    navIcon: {
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 10
     },
     loadingText: {
         color: 'white',
@@ -230,7 +264,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
     },
     label: {
-        color: '#bdc3c7',
+        color: 'black',
         fontSize: 20,
         fontWeight: 'bold',
         marginTop: 10,

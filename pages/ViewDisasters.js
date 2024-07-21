@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, TextInput, FlatList, Alert, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, TextInput, FlatList, Alert, Image, ScrollView } from 'react-native';
 import axios from 'axios';
 import NavigationMenu1 from '../components/NavigationMenu1';
 import { useFocusEffect } from '@react-navigation/native';
@@ -8,89 +8,42 @@ const { width, height } = Dimensions.get('window');
 
 const ViewDisasters = ({ navigation }) => {
     const [searchText, setSearchText] = useState('');
-    const [partners, setPartners] = useState([]);
-    const [ngrokUrl, setNgrokUrl] = useState(null);
-    const [showFilter, setShowFilter] = useState(false);
-    const [selectedFilters, setSelectedFilters] = useState({
-        soleProprietorship: false,
-        partnership: false,
-        corporation: false,
-        nonProfit: false,
-        llc: false,
-    });
+    const [disasters, setDisasters] = useState([]);
 
     useEffect(() => {
-        const config = {
-            headers: { 'Authorization': "Bearer 2hsoEyQpmPX4VkdVTitaAGgnJE7_6dFvuuendEo5DM1ry44rX", 'Ngrok-Version': '2' }
-        };
-
-        const fetchNgrokUrl = async () => {
+        const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    'https://api.ngrok.com/endpoints',
-                    config
+                    'https://api.weather.gov/alerts/active/area/MI',
                 );
-                const url = response.data.endpoints[0].public_url;
-                setNgrokUrl(url);
+                console.log("----------------------------")
+                console.log(response.data.features[0].properties.effective)
+                console.log(response.data.features[0].properties.ends)
+                console.log(response.data.features[0].properties.event)
+                setDisasters(response.data.features)
             } catch (error) {
                 console.error('Failed to fetch ngrok URL:', error);
                 Alert.alert('Error', 'Failed to fetch server configuration.');
             }
         };
-        fetchNgrokUrl();
+
+        fetchData();
     }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            const fetchPartners = async () => {
-                if (!ngrokUrl) {
-                    return;
-                }
-                try {
-                    const response = await axios.get(`${ngrokUrl}/partners`);
-                    setPartners(response.data);
-                } catch (error) {
-                    console.error('Error fetching partners:', error);
-                    Alert.alert('Error', 'Failed to fetch partners');
-                }
-            };
-
-            fetchPartners();
-        }, [ngrokUrl])
-    );
-
-    const handleFilterChange = (filter) => {
-        setSelectedFilters((prevFilters) => ({
-            ...prevFilters,
-            [filter]: !prevFilters[filter],
-        }));
-    };
-
     const applyFilters = () => {
-        let filtered = partners;
+        let filtered = disasters;
 
-        if (selectedFilters.soleProprietorship) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'FireS');
-        }
-        if (selectedFilters.partnership) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Hurricanes');
-        }
-        if (selectedFilters.corporation) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Storms');
-        }
-        if (selectedFilters.nonProfit) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'Floods');
-        }
-        if (selectedFilters.llc) {
-            filtered = filtered.filter(partner => partner.company.type_of_organization === 'EarthQuakes');
-        }
-
-        return filtered.filter(partner =>
-            partner.company.name.toLowerCase().includes(searchText.toLowerCase())
+        return filtered.filter(disaster =>
+            disaster.properties.event.toLowerCase().includes(searchText.toLowerCase())
         );
     };
 
-    const filteredPartners = applyFilters();
+    const filteredDisasters = applyFilters()
+
+    function truncate(str, maxlength) {
+        return (str.length > maxlength) ?
+            str.slice(0, maxlength - 1) + '…' : str;
+    }
 
     return (
         <View style={styles.container}>
@@ -102,20 +55,37 @@ const ViewDisasters = ({ navigation }) => {
                     onChangeText={setSearchText}
                 />
             </View>
-            <View style={styles.scrollView}>
-                <FlatList
-                    data={filteredPartners}
-                    keyExtractor={item => item._id}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={styles.listView}
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity onPress={() => navigation.navigate('DisasterDetails', { partnerName: item.company.name })} style={[styles.partnerItem, index === 0 && { marginTop: 0 }]}>
-                            <Text style={styles.partnerName}>{item.company.name}</Text>
-                            <Text style={styles.partnerInfo}>{item.company.description}</Text>
-                        </TouchableOpacity>
-                    )}
-                />
-            </View>
+
+            {disasters.length < 0 ? (
+                <View>
+                    <Text>Nothing</Text>
+                </View>
+            ) : (
+                <View style={styles.scrollView}>
+                    <FlatList
+                        data={filteredDisasters}
+                        keyExtractor={item => item.id}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={styles.listView}
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity onPress={() => navigation.navigate('DisasterDetails', { disaster: item })} style={[styles.partnerItem, index === 0 && { marginTop: 0 }]}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={styles.navIcon}>
+                                        <Image source={require('../assets/flood_warning.jpg')} style={[{ width: '100%', height: '100%' }]} />
+                                    </View>
+                                    <View>
+                                        <Text style={styles.partnerName}>{item.properties.event} - Active</Text>
+                                        <Text style={styles.partnerInfo}>Where: {truncate(item.properties.areaDesc, 27)}</Text>
+                                        <Text style={styles.partnerInfo}>Start: {item.properties.effective.split("T")[0]}</Text>
+                                        <Text style={styles.partnerInfo}>End: {item.properties.ends.split("T")[0]}</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </View>
+            )}
+
             <NavigationMenu1 navigation={navigation} page={"Home"} />
         </View>
     );
@@ -158,7 +128,7 @@ const styles = StyleSheet.create({
     partnerItem: {
         width: width * 0.9,
         height: height * 0.15, // Adjusted height for more spacing
-        justifyContent: 'center',
+        //justifyContent: 'center',
         backgroundColor: '#2E8B57', // Adjusted item background color
         padding: 15,
         borderRadius: 5,
@@ -175,6 +145,16 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16, // Increased fontSize
         marginTop: 5,
+    },
+    navIcon: {
+        width: 75,
+        height: 75,
+        borderColor: 'white',
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 15,
+        marginTop: 15
     },
 });
 
