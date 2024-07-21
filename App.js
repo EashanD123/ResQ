@@ -10,6 +10,7 @@ import DisasterDetails from './pages/DisasterDetails';
 import Register from './pages/Register';
 import Account from './pages/Account';
 import Chatbot from './pages/Chatbot';
+import Warnings from './pages/Warnings';
 
 
 const Stack = createStackNavigator();
@@ -24,9 +25,10 @@ function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="ViewDisasters" component={ViewDisasters} />
         <Stack.Screen name="DisasterDetails" component={DisasterDetails} />
-        <Stack.Screen name="Account" component={Account} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Chatbot" component={Chatbot} />
+        <Stack.Screen name="Account" component={Account}/>
+        <Stack.Screen name="Register" component={Register}/>
+        <Stack.Screen name="Chatbot" component={Chatbot}/>
+        <Stack.Screen name="Warnings" component={Warnings}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
