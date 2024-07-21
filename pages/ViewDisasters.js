@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, TextInput, FlatList, Alert, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, TextInput, FlatList, Alert, Modal } from 'react-native';
 import axios from 'axios';
 import NavigationMenu1 from '../components/NavigationMenu1';
 import { useFocusEffect } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
-const ViewPartners = ({ navigation }) => {
+const ViewDisasters = ({ navigation }) => {
     const [searchText, setSearchText] = useState('');
     const [partners, setPartners] = useState([]);
     const [ngrokUrl, setNgrokUrl] = useState(null);
@@ -101,9 +101,6 @@ const ViewPartners = ({ navigation }) => {
                     value={searchText}
                     onChangeText={setSearchText}
                 />
-                <TouchableOpacity style={styles.filterButton} onPress={() => setShowFilter(true)}>
-                    <Image source={require('../assets/settings-sliders.png')} style={styles.filterIcon} />
-                </TouchableOpacity>
             </View>
             <View style={styles.scrollView}>
                 <FlatList
@@ -112,37 +109,13 @@ const ViewPartners = ({ navigation }) => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.listView}
                     renderItem={({ item, index }) => (
-                        <TouchableOpacity onPress={() => navigation.navigate('PartnerDetails', { partnerName: item.company.name })} style={[styles.partnerItem, index === 0 && { marginTop: 0 }]}>
+                        <TouchableOpacity onPress={() => navigation.navigate('DisasterDetails', { partnerName: item.company.name })} style={[styles.partnerItem, index === 0 && { marginTop: 0 }]}>
                             <Text style={styles.partnerName}>{item.company.name}</Text>
                             <Text style={styles.partnerInfo}>{item.company.description}</Text>
                         </TouchableOpacity>
                     )}
                 />
             </View>
-            <Modal
-                visible={showFilter}
-                transparent={true}
-                animationType='slide'
-                onRequestClose={() => setShowFilter(false)}
-            >
-                <View style={styles.filterModal}>
-                    <Text style={styles.filterHeaderText}>Filter Options</Text>
-                    {Object.keys(selectedFilters).map((filter) => (
-                        <View style={styles.filterOption} key={filter}>
-                            <TouchableOpacity
-                                style={[styles.checkbox, selectedFilters[filter] && styles.checkboxSelected]}
-                                onPress={() => handleFilterChange(filter)}
-                            >
-                                {selectedFilters[filter] && <Text style={styles.checkboxText}>✓</Text>}
-                            </TouchableOpacity>
-                            <Text style={styles.checkboxLabel}>{filter.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</Text>
-                        </View>
-                    ))}
-                    <TouchableOpacity style={styles.filterCloseButton} onPress={() => setShowFilter(false)}>
-                        <Text style={styles.filterCloseButtonText}>Close</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
             <NavigationMenu1 navigation={navigation} page={"Home"} />
         </View>
     );
@@ -151,47 +124,42 @@ const ViewPartners = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#2c3e50',
+        backgroundColor: '#8FBC8F', // Changed background color
         paddingHorizontal: '5%',
+        paddingTop: height * 0.03, // Added paddingTop to shift content downwards
+    },
+    searchView: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Adjusted spacing between search bar and filter button
+        alignItems: 'center',
+        marginTop: height * 0.04, // Adjusted marginTop
     },
     searchBar: {
-        width: width * 0.775,
+        width: width * 0.9, // Adjusted width
         height: width * 0.12,
-        marginRight: width * 0.005,
         borderColor: 'black',
         borderWidth: 1,
         borderRadius: 5,
         paddingHorizontal: 10,
         backgroundColor: '#ecf0f1',
     },
-    filterButton: {
-        width: width * 0.12,
-        height: width * 0.12,
-        marginLeft: width * 0.005,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 5,
-        backgroundColor: '#1abc9c',
-    },
-    filterIcon: {
-        width: 24,
-        height: 24,
-    },
-    searchView: {
+    scrollView: {
+        marginTop: height * 0.02, // Adjusted marginTop
         width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'center',
+        flex: 1,
+    },
+    listView: {
+        flexGrow: 1,
         alignItems: 'center',
-        marginTop: height * 0.06,
     },
     partnerItem: {
         width: width * 0.9,
-        height: height * 0.11,
+        height: height * 0.15, // Adjusted height for more spacing
         justifyContent: 'center',
-        backgroundColor: '#34495e',
+        backgroundColor: '#2E8B57', // Adjusted item background color
         padding: 15,
         borderRadius: 5,
         borderWidth: 0.5,
@@ -200,73 +168,14 @@ const styles = StyleSheet.create({
     },
     partnerName: {
         color: '#ecf0f1',
-        fontSize: 18,
+        fontSize: 20, // Increased fontSize
         fontWeight: 'bold',
     },
     partnerInfo: {
-        color: '#bdc3c7',
-        fontSize: 14,
+        color: 'white',
+        fontSize: 16, // Increased fontSize
         marginTop: 5,
-    },
-    listView: {
-        width: '100%',
-        flexGrow: 1,
-        alignItems: 'center',
-    },
-    scrollView: {
-        marginTop: height * 0.015,
-        width: width,
-        height: height * 0.725
-    },
-    filterModal: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    filterHeaderText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white',
-        marginBottom: 20,
-    },
-    filterCloseButton: {
-        backgroundColor: '#3498db',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-    },
-    filterCloseButtonText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    filterOption: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderWidth: 1,
-        borderColor: '#fff',
-        borderRadius: 3,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 10,
-    },
-    checkboxSelected: {
-        backgroundColor: '#1abc9c',
-    },
-    checkboxText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    checkboxLabel: {
-        color: '#fff',
-        fontSize: 16,
     },
 });
 
-export default ViewPartners;
+export default ViewDisasters;

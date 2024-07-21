@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Platform, ScrollView } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps';
 import axios from 'axios';
-import NavigationMenu4 from '../components/NavigationMenu4';
+import NavigationMenu1 from '../components/NavigationMenu1';
 
 const { width, height } = Dimensions.get('window');
 
-const PartnerDetails = ({ route, navigation }) => {
+const DisasterDetails = ({ route, navigation }) => {
     const { partnerName } = route.params;
     const [partner, setPartner] = useState(null);
     const [ngrokUrl, setNgrokUrl] = useState(null);
@@ -112,7 +112,7 @@ const PartnerDetails = ({ route, navigation }) => {
         return (
             <View style={styles.container2}>
                 <Text style={styles.loadingText}>Loading...</Text>
-                <NavigationMenu4 />
+                <NavigationMenu1 />
             </View>
         );
     }
@@ -157,7 +157,7 @@ const PartnerDetails = ({ route, navigation }) => {
                     <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
             </View>
-            <NavigationMenu4 navigation={navigation} page={"PartnerDetails"} partner={partner}/>
+            <NavigationMenu1 navigation={navigation} page={"PartnerDetails"} partner={partner}/>
         </View>
     );
 };
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        backgroundColor: '#2c3e50',
+        backgroundColor: '#8FBC8F',
         paddingHorizontal: '5%',
     },
     container2: {
@@ -174,14 +174,14 @@ const styles = StyleSheet.create({
         height: height,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#2c3e50',
+        backgroundColor: '#8FBC8F',
     },
     loadingText: {
-        color: '#ecf0f1',
+        color: 'white',
         fontSize: 20,
     },
     infoBox: {
-        backgroundColor: '#34495e',
+        backgroundColor: '#2E8B57',
         borderRadius: 10,
         borderWidth: 0.5,
         borderColor: 'white',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     titleBox: {
-        backgroundColor: '#34495e',
+        backgroundColor: '#2E8B57',
         borderRadius: 10,
         borderWidth: 0.5,
         borderColor: 'white',
@@ -281,4 +281,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PartnerDetails;
+export default DisasterDetails;

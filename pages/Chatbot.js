@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ImageBackground, Dimensions } from 'react-native';
+import { View, StyleSheet, ImageBackground, Dimensions, Keyboard } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import axios from 'axios';
 import NavigationMenu1 from '../components/NavigationMenu1';
@@ -9,6 +9,7 @@ const { width, height } = Dimensions.get('window');
 
 const Chatbot = ({ navigation }) => {
   const [messages, setMessages] = useState([]);
+  const [moveKeyboard, setMoveKeyboard] = useState(135)
 
   useEffect(() => {
     setMessages([
@@ -19,10 +20,25 @@ const Chatbot = ({ navigation }) => {
         user: {
           _id: 2,
           name: 'Chatbot',
-          avatar: '../assets/chatbot2.jpg', // Replace with your chatbot avatar URL
+          avatar: require('../assets/chatbot2.jpg'), // Replace with your chatbot avatar URL
         },
       },
     ]);
+
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      console.log('Keyboard opened');
+      setMoveKeyboard(15)
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      console.log('Keyboard closed');
+      setMoveKeyboard(135)
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
   }, []);
 
   const onSend = async (newMessages = []) => {
@@ -60,7 +76,7 @@ const Chatbot = ({ navigation }) => {
         user: {
           _id: 2,
           name: 'Chatbot',
-          avatar: '../assets/chatbot2.jpg', // Replace with your chatbot avatar URL
+          avatar: require('../assets/chatbot2.jpg'), // Replace with your chatbot avatar URL
         },
       };
 
@@ -116,7 +132,7 @@ const Chatbot = ({ navigation }) => {
     <ImageBackground
       style={styles.background} // Adjusted style to include backgroundColor
     >
-      <View style={{ width: width - 20, height: height - 135, marginLeft: 10 }}>
+      <View style={{ width: width - 20, height: height - moveKeyboard, marginLeft: 10 }}>
         <GiftedChat
           messages={messages}
           onSend={newMessages => onSend(newMessages)}
