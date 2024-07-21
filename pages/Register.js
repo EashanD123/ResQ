@@ -1,139 +1,140 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Dimensions, Alert } from 'react-native';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const Register = ({ navigation }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zip, setZip] = useState('');
+  const [country, setCountry] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [ngrokUrl, setNgrokUrl] = useState(null);
 
-  const [reload, setReload] = useState("Register")
-  const [missing, setMissing] = useState([false, false, false])
-
-  useEffect(() => {
-    const config = {
-      headers: { 'Authorization': "Bearer 2hsoEyQpmPX4VkdVTitaAGgnJE7_6dFvuuendEo5DM1ry44rX", 'Ngrok-Version': '2' }
-    };
-
-    const fetchNgrokUrl = async () => {
-      try {
-        const response = await axios.get(
-          'https://api.ngrok.com/endpoints',
-          config
-        );
-        const url = response.data.endpoints[0].public_url;
-        setNgrokUrl(url);
-      } catch (error) {
-        console.error('Failed to fetch ngrok URL:', error);
-        Alert.alert('Error', 'Failed to fetch server configuration.');
-      }
-    };
-
-    fetchNgrokUrl();
-  }, []);
-
-  const handleRegister = async () => {
-    let temp = missing
-    for (let i = 0; i < 3; i++) {
-      temp[i] = false
+  const handleNext = () => {
+    if (currentPage === 3) {
+      // Handle registration logic here
+      // navigation.navigate('Home'); // Or another action
+    } else {
+      setCurrentPage(currentPage + 1);
     }
-    console.log(email)
-    if (email == "") {
-      temp[0] = true
-    }
-    if (password == "") {
-      temp[1] = true
-    }
-    if (confirmPassword == "") {
-      temp[2] = true
-    }
+  };
 
-
-    for (let i = 0; i < 3; i++) {
-      if (temp[i]) {
-        setMissing(temp)
-        setReload("Register")
-        Alert.alert('Error', 'Please fill in the missing fields.')
-        return
-      }
-    }
-
-    if (!ngrokUrl) {
-      Alert.alert('Error', 'Server configuration not loaded.');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
-      temp[2] = true
-      setMissing(temp)
-      setReload("Register")
-      return;
-    }
-    setMissing(temp)
-    setReload("Register")
-    
-    try {
-      const response = await axios.post(`${ngrokUrl}/register`, { email, password });
-      Alert.alert('Registration Successful', 'You have registered successfully. Please log in.');
-      navigation.navigate('Login');
-    } catch (error) {
-      if (error.response) {
-        Alert.alert('Registration Error', error.response.data.message);
-      } else {
-        Alert.alert('Registration Error', 'An error occurred. Please try again.');
-      }
+  const handleBack = () => {
+    if (currentPage === 1) {
+      navigation.navigate('Login'); // Navigate back to the login page
+    } else {
+      setCurrentPage(currentPage - 1);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/spartner_logo.png')} style={styles.logo} />
-      <Text style={styles.title}>Create an Account</Text>
-      <View style={{ flexDirection: 'row' }}>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <Text style={{ textAlign: 'left', fontSize: 15, marginTop: 2, marginLeft: -15, color: missing[0] ? 'red' : 'white' }}> * </Text>
+      <View style={styles.imgCont}>
+        <Image source={require('../assets/login_img.png')} style={styles.image} />
       </View>
-
-      <View style={{ flexDirection: 'row' }}>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <Text style={{ textAlign: 'left', fontSize: 15, marginTop: 2, marginLeft: -15, color: missing[1] ? 'red' : 'white' }}> * </Text>
-      </View>
-
-      <View style={{ flexDirection: 'row' }}>
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
-        <Text style={{ textAlign: 'left', fontSize: 15, marginTop: 2, marginLeft: -15, color: missing[2] ? 'red' : 'white' }}> * </Text>
-      </View>
-
-      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-        <Text style={styles.buttonText}> {reload} </Text>
-      </TouchableOpacity>
-      <View style={styles.linkView}>
-        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.loginButtonText}>Already have an account? Log in</Text>
-        </TouchableOpacity>
+      <View style={styles.formContainer}>
+        <Text style={styles.logoText}>ResQ</Text>
+        {currentPage === 1 && (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              placeholderTextColor="#000"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              placeholderTextColor="#000"
+              value={lastName}
+              onChangeText={setLastName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#000"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </>
+        )}
+        {currentPage === 2 && (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="Street"
+              placeholderTextColor="#000"
+              value={street}
+              onChangeText={setStreet}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="City"
+              placeholderTextColor="#000"
+              value={city}
+              onChangeText={setCity}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="State"
+              placeholderTextColor="#000"
+              value={state}
+              onChangeText={setState}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Zip Code"
+              placeholderTextColor="#000"
+              value={zip}
+              onChangeText={setZip}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Country"
+              placeholderTextColor="#000"
+              value={country}
+              onChangeText={setCountry}
+            />
+          </>
+        )}
+        {currentPage === 3 && (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="#000"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm Password"
+              placeholderTextColor="#000"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+            />
+          </>
+        )}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleBack}>
+            <Text style={styles.buttonText}>{currentPage === 1 ? 'Back to Login' : 'Back'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleNext}>
+            <Text style={styles.buttonText}>{currentPage === 3 ? 'Register' : 'Next'}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -142,58 +143,67 @@ const Register = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#2c3e50',
-    paddingHorizontal: '5%',
-  },
-  logo: {
-    width: width * 0.6,
-    height: width * 0.6,
-    borderRadius: (width * 0.6) / 2,
-    borderWidth: 3,
-    borderColor: '#fff',
-    marginTop: height * 0.09,
-    marginBottom: height * 0.06,
-  },
-  title: {
-    fontSize: width * 0.075,
-    fontWeight: 'bold',
-    marginBottom: height * 0.015,
-    textAlign: 'center',
-    color: '#fff',
-  },
-  input: {
-    height: 40,
-    width: '100%',
-    borderRadius: 5,
-    marginBottom: 12,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-  },
-  registerButton: {
-    width: '100%',
-    height: 40,
-    backgroundColor: '#3498db',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
+    backgroundColor: '#8FBC8F',
+  },
+  imgCont: {
+    height: height * 0.35,
+    width: width * 0.92,
+    marginBottom: height * 0.025,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    marginTop: height * 0.04
+  },
+  formContainer: {
+    width: width,
+    height: height * 0.65,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+  },
+  logoText: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#2E8B57',
+    marginBottom: 20,
+  },
+  input: {
+    height: 50,
+    width: '100%',
+    borderColor: '#2E8B57',
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    marginBottom: 15,
+    color: '#000',
+    backgroundColor: '#fff',
+  },
+  buttonContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  button: {
+    width: '45%',
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#2E8B57',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-  },
-  linkView: {
-    marginTop: 10,
-  },
-  loginButton: {
-    marginTop: 10,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    textDecorationLine: 'underline',
-    textAlign: 'center',
   },
 });
 
